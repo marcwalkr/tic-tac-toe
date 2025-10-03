@@ -51,17 +51,18 @@ const Display = (function () {
     const player1 = createPlayer(player1Name, player1Marker);
     const player2 = createPlayer(player2Name, player2Marker);
 
-    return [player1, player2];
+    Game.setPlayers([player1, player2]);
   }
 
-  const promptMove = (playerName) => {
-    const answer = prompt(`${playerName}'s Turn\nEnter a position to place your marker.`);
+  const promptMove = () => {
+    const currentPlayer = Game.getCurrentPlayer();
+    const answer = prompt(`${currentPlayer.name}'s Turn\nEnter a position to place your marker.`);
     let [row, column] = answer.split(" ");
 
     row = Number(row);
     column = Number(column);
 
-    return { row, column }
+    Game.playTurn(row, column);
   }
 
   const printBoard = () => {
@@ -70,8 +71,22 @@ const Display = (function () {
     console.log(`${Board.getCell(2, 0)}\t${Board.getCell(2, 1)}\t${Board.getCell(2, 2)}`);
   }
 
-  return { promptPlayerData, promptMove, printBoard };
-})(Board);
+  const printWinner = (winner) => {
+    console.log(`${winner.name} Wins!`);
+  }
+
+  const printTie = () => {
+    console.log("Tied");
+  }
+
+  const printWins = (players) => {
+    for (const player of players) {
+      console.log(`${player.name} Wins: ${player.getWins()}`);
+    }
+  }
+
+  return { promptPlayerData, promptMove, printBoard, printWinner, printTie, printWins };
+})();
 
 const Game = (function () {
   let players = null;
@@ -118,43 +133,37 @@ const Game = (function () {
 
   const playTurn = (row, column) => {
     if (!isLegalMove(row, column)) {
-      return { valid: false, winner: null, tie: false }
-    } 
+      console.log("That position has already been taken.");
+      return;
+    }
 
     const currentPlayer = getCurrentPlayer();
     Board.placeMarker(currentPlayer.marker, row, column);
     currentPlayerIdx++;
 
+    Display.printBoard();
+
     const { winner, tie } = checkOutcome();
-    return { valid: true, winner, tie };
+    const gameOver = winner !== null || tie;
+
+    if (winner !== null) {
+      Display.printWinner(winner);
+      winner.addWin();
+    }
+
+    if (tie) Display.printTie();
+
+    if (gameOver) {
+      Display.printWins(players);
+      Board.clear();
+    }
   }
 
   return { getCurrentPlayer, setPlayers, playTurn }
-})(Board);
+})();
 
-const players = Display.promptPlayerData();
-Game.setPlayers(players);
+Display.promptPlayerData();
 
-let winner = null;
-let tie = false;
-while (!winner && !tie) {
-  const playerName = Game.getCurrentPlayer().name;
-  const move = Display.promptMove(playerName);
-  const result = Game.playTurn(move.row, move.column);
-
-  if (!result.valid) {
-    console.log("That position has already been taken.");
-  }
-
-  winner = result.winner;
-  tie = result.tie;
-
-  Display.printBoard();
+while (true) {
+  Display.promptMove(); 
 }
-
-if (winner) {
-  console.log(`Winner: ${winner.name}`);
-  winner.addWin();
-}
-
-if (tie) console.log("Tied");
