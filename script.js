@@ -64,13 +64,13 @@ const Display = (function () {
     return { row, column }
   }
 
-  const print = () => {
+  const printBoard = () => {
     console.log(`${Board.getCell(0, 0)}\t${Board.getCell(0, 1)}\t${Board.getCell(0, 2)}`);
     console.log(`${Board.getCell(1, 0)}\t${Board.getCell(1, 1)}\t${Board.getCell(1, 2)}`);
     console.log(`${Board.getCell(2, 0)}\t${Board.getCell(2, 1)}\t${Board.getCell(2, 2)}`);
   }
 
-  return { promptPlayerData, promptMove, print };
+  return { promptPlayerData, promptMove, printBoard };
 })(Board);
 
 const Game = (function () {
@@ -149,7 +149,7 @@ while (!winner && !tie) {
   winner = result.winner;
   tie = result.tie;
 
-  Display.print();
+  Display.printBoard();
 }
 
 if (winner) {
