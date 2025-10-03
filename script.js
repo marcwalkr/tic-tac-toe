@@ -124,3 +124,21 @@ const Game = (function () {
 
   return { getCurrentPlayer, setPlayers, playTurn }
 })(Board);
+
+const players = Display.promptPlayerData();
+Game.setPlayers(players);
+
+let winner = null;
+while (!winner) {
+  const currentPlayer = Game.getCurrentPlayer();
+  const move = Display.promptMove(currentPlayer.name);
+  winner = Game.playTurn(move.row, move.column);
+  Display.print();
+}
+
+if (winner === "tie") {
+  console.log("Tied");
+} else {
+  console.log(`Winner: ${winner.name}`);
+  winner.addWin();
+}
