@@ -85,7 +85,7 @@ const Game = (function () {
     players = newPlayers;
   }
 
-  const getWinner = () => {
+  const checkOutcome = () => {
     const row1 = [Board.getCell(0, 0), Board.getCell(0, 1), Board.getCell(0, 2)];
     const row2 = [Board.getCell(1, 0), Board.getCell(1, 1), Board.getCell(1, 2)];
     const row3 = [Board.getCell(2, 0), Board.getCell(2, 1), Board.getCell(2, 2)];
@@ -101,11 +101,15 @@ const Game = (function () {
       if (line[0] !== "" && line.every(x => x === line[0])) {
         const winningMarker = line[0];
         const winner = players.find((player) => player.marker === winningMarker);
-        return winner;
+        return { winner, tie: false };
       }
     }
 
-    return Board.filled() ? "tie" : null;
+    if (Board.filled()) {
+      return { winner: null, tie: true };
+    } else {
+      return { winner: null, tie: false };
+    }
   }
 
   const isLegalMove = (row, column) => {
@@ -113,13 +117,16 @@ const Game = (function () {
   }
 
   const playTurn = (row, column) => {
-    if (!isLegalMove(row, column)) return null;
+    if (!isLegalMove(row, column)) {
+      return { valid: false, winner: null, tie: false }
+    } 
 
     const currentPlayer = getCurrentPlayer();
     Board.placeMarker(currentPlayer.marker, row, column);
-
     currentPlayerIdx++;
-    return getWinner();
+
+    const { winner, tie } = checkOutcome();
+    return { valid: true, winner, tie };
   }
 
   return { getCurrentPlayer, setPlayers, playTurn }
@@ -129,16 +136,25 @@ const players = Display.promptPlayerData();
 Game.setPlayers(players);
 
 let winner = null;
-while (!winner) {
-  const currentPlayer = Game.getCurrentPlayer();
-  const move = Display.promptMove(currentPlayer.name);
-  winner = Game.playTurn(move.row, move.column);
+let tie = false;
+while (!winner && !tie) {
+  const playerName = Game.getCurrentPlayer().name;
+  const move = Display.promptMove(playerName);
+  const result = Game.playTurn(move.row, move.column);
+
+  if (!result.valid) {
+    console.log("That position has already been taken.");
+  }
+
+  winner = result.winner;
+  tie = result.tie;
+
   Display.print();
 }
 
-if (winner === "tie") {
-  console.log("Tied");
-} else {
+if (winner) {
   console.log(`Winner: ${winner.name}`);
   winner.addWin();
 }
+
+if (tie) console.log("Tied");
