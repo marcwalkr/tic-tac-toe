@@ -72,3 +72,55 @@ const Display = (function () {
 
   return { promptPlayerData, promptMove, print };
 })(Board);
+
+const Game = (function () {
+  let players = null;
+  let currentPlayerIdx = 0;
+
+  const getCurrentPlayer = () => {
+    return players[currentPlayerIdx % players.length];
+  }
+
+  const setPlayers = (newPlayers) => {
+    players = newPlayers;
+  }
+
+  const getWinner = () => {
+    const row1 = [Board.getCell(0, 0), Board.getCell(0, 1), Board.getCell(0, 2)];
+    const row2 = [Board.getCell(1, 0), Board.getCell(1, 1), Board.getCell(1, 2)];
+    const row3 = [Board.getCell(2, 0), Board.getCell(2, 1), Board.getCell(2, 2)];
+
+    const col1 = [Board.getCell(0, 0), Board.getCell(1, 0), Board.getCell(2, 0)];
+    const col2 = [Board.getCell(0, 1), Board.getCell(1, 1), Board.getCell(2, 1)];
+    const col3 = [Board.getCell(0, 2), Board.getCell(1, 2), Board.getCell(2, 2)];
+
+    const diag1 = [Board.getCell(0, 0), Board.getCell(1, 1), Board.getCell(2, 2)];
+    const diag2 = [Board.getCell(0, 2), Board.getCell(1, 1), Board.getCell(2, 0)];
+
+    for (const line of [row1, row2, row3, col1, col2, col3, diag1, diag2]) {
+      if (line[0] !== "" && line.every(x => x === line[0])) {
+        const winningMarker = line[0];
+        const winner = players.find((player) => player.marker === winningMarker);
+        return winner;
+      }
+    }
+
+    return Board.filled() ? "tie" : null;
+  }
+
+  const isLegalMove = (row, column) => {
+    return Board.getCell(row, column) === "";
+  }
+
+  const playTurn = (row, column) => {
+    if (!isLegalMove(row, column)) return null;
+
+    const currentPlayer = getCurrentPlayer();
+    Board.placeMarker(currentPlayer.marker, row, column);
+
+    currentPlayerIdx++;
+    return getWinner();
+  }
+
+  return { getCurrentPlayer, setPlayers, playTurn }
+})(Board);
