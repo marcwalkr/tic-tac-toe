@@ -19,14 +19,6 @@ const Board = (function () {
     board[row][column] = marker;
   }
 
-  const clear = () => {
-    board = [
-      ["", "", ""], 
-      ["", "", ""], 
-      ["", "", ""]
-    ];
-  }
-
   const filled = () => {
     for (const row of board) {
       for (const cell of row) {
@@ -37,7 +29,15 @@ const Board = (function () {
     return true;
   }
 
-  return { getCell, placeMarker, clear, filled }
+  const clear = () => {
+    board = [
+      ["", "", ""], 
+      ["", "", ""], 
+      ["", "", ""]
+    ];
+  }
+
+  return { getCell, placeMarker, filled, clear }
 })();
 
 const Display = (function () {
@@ -85,6 +85,10 @@ const Game = (function () {
     players = newPlayers;
   }
 
+  const isLegalMove = (row, column) => {
+    return Board.getCell(row, column) === "";
+  }
+
   const checkOutcome = () => {
     const row1 = [Board.getCell(0, 0), Board.getCell(0, 1), Board.getCell(0, 2)];
     const row2 = [Board.getCell(1, 0), Board.getCell(1, 1), Board.getCell(1, 2)];
@@ -110,10 +114,6 @@ const Game = (function () {
     } else {
       return { winner: null, tie: false };
     }
-  }
-
-  const isLegalMove = (row, column) => {
-    return Board.getCell(row, column) === "";
   }
 
   const playTurn = (row, column) => {
