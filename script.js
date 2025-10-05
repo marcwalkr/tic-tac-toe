@@ -62,7 +62,26 @@ const Display = (function () {
     row = Number(row);
     column = Number(column);
 
-    Game.playTurn(row, column);
+    const { valid, winner, tie } = Game.playTurn(row, column);
+    if (!valid) {
+      console.log("That position has already been taken.");
+      return;
+    }
+
+    printBoard();
+
+    if (winner !== null) {
+      printWinner(winner);
+    }
+
+    if (tie) printTie();
+
+    const gameOver = winner !== null || tie;
+    if (gameOver) {
+      const players = Game.getPlayers();
+      printWins(players);
+      Board.clear();
+    }
   }
 
   const printBoard = () => {
@@ -85,7 +104,7 @@ const Display = (function () {
     }
   }
 
-  return { promptPlayerData, promptMove, printBoard, printWinner, printTie, printWins };
+  return { promptPlayerData, promptMove };
 })();
 
 const Game = (function () {
@@ -95,6 +114,8 @@ const Game = (function () {
   const getCurrentPlayer = () => {
     return players[currentPlayerIdx % players.length];
   }
+
+  const getPlayers = () => players;
 
   const setPlayers = (newPlayers) => {
     players = newPlayers;
@@ -133,33 +154,20 @@ const Game = (function () {
 
   const playTurn = (row, column) => {
     if (!isLegalMove(row, column)) {
-      console.log("That position has already been taken.");
-      return;
+      return { valid: false, winner: null, tie: false };
     }
 
     const currentPlayer = getCurrentPlayer();
     Board.placeMarker(currentPlayer.marker, row, column);
     currentPlayerIdx++;
 
-    Display.printBoard();
-
     const { winner, tie } = checkOutcome();
-    const gameOver = winner !== null || tie;
+    if (winner !== null) winner.addWin();
 
-    if (winner !== null) {
-      Display.printWinner(winner);
-      winner.addWin();
-    }
-
-    if (tie) Display.printTie();
-
-    if (gameOver) {
-      Display.printWins(players);
-      Board.clear();
-    }
+    return { valid: true, winner, tie };
   }
 
-  return { getCurrentPlayer, setPlayers, playTurn }
+  return { getCurrentPlayer, getPlayers, setPlayers, playTurn }
 })();
 
 Display.promptPlayerData();
