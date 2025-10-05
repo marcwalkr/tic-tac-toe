@@ -80,7 +80,7 @@ const Display = (function () {
     if (gameOver) {
       const players = Game.getPlayers();
       printWins(players);
-      Board.clear();
+      Game.reset();
     }
   }
 
@@ -167,7 +167,12 @@ const Game = (function () {
     return { valid: true, winner, tie };
   }
 
-  return { getCurrentPlayer, getPlayers, setPlayers, playTurn }
+  const reset = () => {
+    Board.clear();
+    currentPlayerIdx = 0;
+  }
+
+  return { getCurrentPlayer, getPlayers, setPlayers, playTurn, reset }
 })();
 
 Display.promptPlayerData();
