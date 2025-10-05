@@ -3,3 +3,16 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.player-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+.player-form__players {
+  display: flex;
+  gap: 5rem;
+}

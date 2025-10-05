@@ -8,6 +8,54 @@
   <script src="script.js"></script>
 </head>
 <body>
+  <form class="player-form">
+    <h1 class="player-form__title">Create New Players</h1>
+
+    <div class="player-form__players">
+      <div class="player-form__player">
+        <h2 class="player-form__subtitle">Player One</h2>
+
+        <div class="player-form__field">
+          <label for="player-one-name">Name</label>
+          <input type="text" id="player-one-name" name="player1Name" required>
+        </div>
+
+        <fieldset class="player-form__marker-group">
+          <legend>Marker</legend>
+          <div class="player-form__marker-option">
+            <input type="radio" id="player-one-x" value="X" name="player1Marker" checked>
+            <label for="player-one-x">X</label>
+          </div>
+          <div class="player-form__marker-option">
+            <input type="radio" id="player-one-o" value="O" name="player1Marker">
+            <label for="player-one-o">O</label>
+          </div>
+        </fieldset>
+      </div>
   
+      <div class="player-form__player">
+        <h2 class="player-form__subtitle">Player Two</h2>
+
+        <div class="player-form__field">
+          <label for="player-two-name">Name</label>
+          <input type="text" id="player-two-name" name="player2Name" required>
+        </div>
+
+        <fieldset class="player-form__marker-group">
+          <legend>Marker</legend>
+          <div class="player-form__marker-option">
+            <input type="radio" id="player-two-x" value="X" name="player2Marker">
+            <label for="player-two-x">X</label>
+          </div>
+          <div class="player-form__marker-option">
+            <input type="radio" id="player-two-o" value="O" name="player2Marker" checked>
+            <label for="player-two-o">O</label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    
+    <button class="player-form__submit">Start Game</button>
+  </form>
 </body>
 </html>
