@@ -174,9 +174,3 @@ const Game = (function () {
 
   return { getCurrentPlayer, getPlayers, setPlayers, playTurn, reset }
 })();
-
-Display.promptPlayerData();
-
-while (true) {
-  Display.promptMove(); 
-}
