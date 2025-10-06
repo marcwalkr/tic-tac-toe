@@ -16,3 +16,16 @@
   display: flex;
   gap: 5rem;
 }
+
+.game {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+}
+
+.game-state {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5rem;
+}
