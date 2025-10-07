@@ -41,70 +41,8 @@ const Board = (function () {
 })();
 
 const Display = (function () {
-  const promptPlayerData = () => {
-    const player1Name = prompt("Enter name for Player One");
-    const player1Marker = prompt("Enter marker for Player One");
 
-    const player2Name = prompt("Enter name for Player Two");
-    const player2Marker = prompt("Enter marker for Player Two");
-
-    const player1 = createPlayer(player1Name, player1Marker);
-    const player2 = createPlayer(player2Name, player2Marker);
-
-    Game.setPlayers([player1, player2]);
-  }
-
-  const promptMove = () => {
-    const currentPlayer = Game.getCurrentPlayer();
-    const answer = prompt(`${currentPlayer.name}'s Turn\nEnter a position to place your marker.`);
-    let [row, column] = answer.split(" ");
-
-    row = Number(row);
-    column = Number(column);
-
-    const { valid, winner, tie } = Game.playTurn(row, column);
-    if (!valid) {
-      console.log("That position has already been taken.");
-      return;
-    }
-
-    printBoard();
-
-    if (winner !== null) {
-      printWinner(winner);
-    }
-
-    if (tie) printTie();
-
-    const gameOver = winner !== null || tie;
-    if (gameOver) {
-      const players = Game.getPlayers();
-      printWins(players);
-      Game.reset();
-    }
-  }
-
-  const printBoard = () => {
-    console.log(`${Board.getCell(0, 0)}\t${Board.getCell(0, 1)}\t${Board.getCell(0, 2)}`);
-    console.log(`${Board.getCell(1, 0)}\t${Board.getCell(1, 1)}\t${Board.getCell(1, 2)}`);
-    console.log(`${Board.getCell(2, 0)}\t${Board.getCell(2, 1)}\t${Board.getCell(2, 2)}`);
-  }
-
-  const printWinner = (winner) => {
-    console.log(`${winner.name} Wins!`);
-  }
-
-  const printTie = () => {
-    console.log("Tied");
-  }
-
-  const printWins = (players) => {
-    for (const player of players) {
-      console.log(`${player.name} Wins: ${player.getWins()}`);
-    }
-  }
-
-  return { promptPlayerData, promptMove };
+  return { };
 })();
 
 const Game = (function () {
