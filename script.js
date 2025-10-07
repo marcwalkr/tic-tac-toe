@@ -41,8 +41,44 @@ const Board = (function () {
 })();
 
 const Display = (function () {
+  const playerForm = document.querySelector(".player-form");
+  const game = document.querySelector(".game");
+  const player1NameLabel = document.querySelector(".game__player-one-name");
+  const player2NameLabel = document.querySelector(".game__player-two-name");
+  const currentPlayerLabel = document.querySelector(".game__current-player");
 
-  return { };
+  const setPlayerLabels = (p1, p2) => {
+    player1NameLabel.textContent = p1;
+    player2NameLabel.textContent = p2;
+  }
+
+  const setCurrentPlayerLabel = (player) => {
+    currentPlayerLabel.textContent = player;
+  }
+
+  const showGameScreen = () => {
+    playerForm.classList.remove("is-active");
+    game.classList.add("is-active");
+  }
+
+  playerForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(playerForm);
+    const player1Name = formData.get("player1Name").trim();
+    const player1Marker = formData.get("player1Marker");
+    const player2Name = formData.get("player2Name").trim();
+    const player2Marker = formData.get("player2Marker");
+
+    const player1 = createPlayer(player1Name, player1Marker);
+    const player2 = createPlayer(player2Name, player2Marker);
+
+    Game.setPlayers([player1, player2]);
+    setPlayerLabels(player1Name, player2Name);
+    setCurrentPlayerLabel(player1Name);
+    showGameScreen();
+  });
+
+  return { setCurrentPlayerLabel };
 })();
 
 const Game = (function () {

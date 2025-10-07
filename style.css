@@ -5,11 +5,15 @@
 }
 
 .player-form {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
   margin: 1rem;
+}
+
+.player-form.is-active {
+  display: flex;
 }
 
 .player-form__players {
@@ -18,11 +22,15 @@
 }
 
 .game {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
   margin: 1rem;
+}
+
+.game.is-active {
+  display: flex;
 }
 
 .game__state {
@@ -66,4 +74,20 @@
 .game-board__cell:nth-child(4),
 .game-board__cell:nth-child(7) {
   border-left: none;
+}
+
+.game__win-message {
+  display: none;
+}
+
+.game__win-message.is-active {
+  display: block;
+}
+
+.game__new-game-btn {
+  display: none;
+}
+
+.game__new-game-btn.is-active {
+  display: inline-block;
 }
