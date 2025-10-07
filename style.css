@@ -25,14 +25,14 @@
   margin: 1rem;
 }
 
-.game__state {
+.game-state {
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: 5rem;
 }
 
-.game__board {
+.game-board {
   display: grid;
   grid-template: repeat(3, 5rem) / repeat(3, 5rem);
 }
