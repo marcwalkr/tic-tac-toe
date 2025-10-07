@@ -25,7 +25,7 @@
   margin: 1rem;
 }
 
-.game-state {
+.game__state {
   display: flex;
   justify-content: center;
   align-items: flex-end;
