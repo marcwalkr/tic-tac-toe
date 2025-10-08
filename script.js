@@ -64,21 +64,18 @@ const Display = (function () {
   playerForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(playerForm);
-    const player1Name = formData.get("player1Name").trim();
-    const player1Marker = formData.get("player1Marker");
-    const player2Name = formData.get("player2Name").trim();
-    const player2Marker = formData.get("player2Marker");
-
-    const player1 = createPlayer(player1Name, player1Marker);
-    const player2 = createPlayer(player2Name, player2Marker);
-
-    Game.setPlayers([player1, player2]);
-    setPlayerLabels(player1Name, player2Name);
-    setCurrentPlayerLabel(player1Name);
+    const playerData = {
+      player1Name: formData.get("player1Name").trim(),
+      player1Marker: formData.get("player1Marker"),
+      player2Name: formData.get("player2Name").trim(),
+      player2Marker: formData.get("player2Marker")
+    };
+    document.dispatchEvent(new CustomEvent("playersCreated", { detail: playerData }));
     showGameScreen();
   });
+  
 
-  return { setCurrentPlayerLabel };
+  return { setPlayerLabels, setCurrentPlayerLabel };
 })();
 
 const Game = (function () {
@@ -145,6 +142,15 @@ const Game = (function () {
     Board.clear();
     currentPlayerIdx = 0;
   }
+
+  document.addEventListener("playersCreated", (e) => {
+    const { player1Name, player1Marker, player2Name, player2Marker } = e.detail;
+    const player1 = createPlayer(player1Name, player1Marker);
+    const player2 = createPlayer(player2Name, player2Marker);
+    players = [player1, player2];
+    Display.setPlayerLabels(player1Name, player2Name);
+    Display.setCurrentPlayerLabel(player1Name);
+  });
 
   return { getCurrentPlayer, getPlayers, setPlayers, playTurn, reset }
 })();
