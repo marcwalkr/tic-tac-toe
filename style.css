@@ -39,7 +39,8 @@
   column-gap: 1rem;
 }
 
-.game__state > * {
+.game__scoreboard,
+.game__turn-display {
   display: flex;
   justify-content: center;
   align-items: flex-end;
