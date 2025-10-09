@@ -52,6 +52,7 @@ const Display = (function () {
   const winnerName = document.querySelector(".game__winner-name");
   const winMessage = document.querySelector(".game__win-message");
   const tieMessage = document.querySelector(".game__tie-message");
+  const newGameButton = document.querySelector(".game__new-game-btn");
 
   const setPlayerLabels = (p1, p2) => {
     player1NameLabel.textContent = p1;
@@ -94,6 +95,19 @@ const Display = (function () {
     }
   }
 
+  const hideGameOverMessages = () => {
+    winMessage.classList.remove("is-active");
+    tieMessage.classList.remove("is-active");
+  }
+
+  const showNewGameButton = () => {
+    newGameButton.classList.add("is-active");
+  }
+
+  const hideNewGameButton = () => {
+    newGameButton.classList.remove("is-active");
+  }
+
   playerForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(playerForm);
@@ -114,7 +128,20 @@ const Display = (function () {
     document.dispatchEvent(new CustomEvent("boardClicked", { detail: move }));
   });
 
-  return { setPlayerLabels, setCurrentPlayerLabel, renderBoard, setWins, showGameOverMessage };
+  newGameButton.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("newGameClicked"));
+  });
+
+  return { 
+    setPlayerLabels, 
+    setCurrentPlayerLabel, 
+    renderBoard, 
+    setWins, 
+    showGameOverMessage, 
+    hideGameOverMessages, 
+    showNewGameButton, 
+    hideNewGameButton
+  };
 })();
 
 const Game = (function () {
@@ -159,7 +186,12 @@ const Game = (function () {
 
   const reset = () => {
     Board.clear();
+    Display.renderBoard();
+    Display.hideGameOverMessages();
+    Display.hideNewGameButton();
+    gameOver = false;
     currentPlayerIdx = 0;
+    Display.setCurrentPlayerLabel(getCurrentPlayer().name);
   }
 
   const playTurn = (row, column) => {
@@ -179,6 +211,7 @@ const Game = (function () {
     if (winner || tie) {
       gameOver = true;
       Display.showGameOverMessage(winner, tie);
+      Display.showNewGameButton();
     } else {
       currentPlayerIdx++;
       Display.setCurrentPlayerLabel(getCurrentPlayer().name);
@@ -196,5 +229,9 @@ const Game = (function () {
 
   document.addEventListener("boardClicked", (e) => {
     playTurn(e.detail.row, e.detail.column);
+  });
+
+  document.addEventListener("newGameClicked", (e) => {
+    reset();
   });
 })();
