@@ -122,6 +122,7 @@ const Display = (function () {
   });
   
   gameBoard.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("game-board__cell")) return;
     const row = Number(event.target.dataset.row);
     const column = Number(event.target.dataset.column);
     const move = { row, column };
