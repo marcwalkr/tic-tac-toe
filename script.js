@@ -187,11 +187,13 @@ const Game = (function () {
 
   const reset = () => {
     Board.clear();
-    Display.renderBoard();
-    Display.hideGameOverMessages();
-    Display.hideNewGameButton();
     gameOver = false;
     currentPlayerIdx = 0;
+
+    Display.hideGameOverMessages();
+    Display.hideNewGameButton();
+    Display.renderBoard();
+    
     Display.setCurrentPlayerLabel(getCurrentPlayer().name);
   }
 
