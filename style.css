@@ -90,6 +90,14 @@
   display: block;
 }
 
+.game__tie-message {
+  display: none;
+}
+
+.game__tie-message.is-active {
+  display: block;
+}
+
 .game__new-game-btn {
   display: none;
 }
