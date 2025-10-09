@@ -1,9 +1,9 @@
-function createPlayer(name, marker) {
+function createPlayer(name, marker, number) {
   let wins = 0;
   const getWins = () => wins;
   const addWin = () => wins++;
 
-  return { name, marker, getWins, addWin };
+  return { name, marker, number, getWins, addWin };
 }
 
 const Board = (function () {
@@ -46,6 +46,12 @@ const Display = (function () {
   const player1NameLabel = document.querySelector(".game__player-one-name");
   const player2NameLabel = document.querySelector(".game__player-two-name");
   const currentPlayerLabel = document.querySelector(".game__current-player");
+  const player1Wins = document.querySelector(".game__player-one-wins");
+  const player2Wins = document.querySelector(".game__player-two-wins");
+  const gameBoard = document.querySelector(".game-board");
+  const winnerName = document.querySelector(".game__winner-name");
+  const winMessage = document.querySelector(".game__win-message");
+  const tieMessage = document.querySelector(".game__tie-message");
 
   const setPlayerLabels = (p1, p2) => {
     player1NameLabel.textContent = p1;
@@ -61,6 +67,33 @@ const Display = (function () {
     game.classList.add("is-active");
   }
 
+  const renderBoard = () => {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const cell = gameBoard.querySelector(`[data-row="${i}"][data-column="${j}"]`);
+        const value = Board.getCell(i, j);
+        cell.textContent = value;
+      }
+    }
+  }
+
+  const setWins = (playerNum, wins) => {
+    if (playerNum === 1) {
+      player1Wins.textContent = wins;
+    } else {
+      player2Wins.textContent = wins;
+    }
+  }
+
+  const showGameOverMessage = (winner, tie) => {
+    if (tie) {
+      tieMessage.classList.add("is-active");
+    } else {
+      winnerName.textContent = winner.name;
+      winMessage.classList.add("is-active");
+    }
+  }
+
   playerForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(playerForm);
@@ -74,22 +107,23 @@ const Display = (function () {
     showGameScreen();
   });
   
+  gameBoard.addEventListener("click", (event) => {
+    const row = Number(event.target.dataset.row);
+    const column = Number(event.target.dataset.column);
+    const move = { row, column };
+    document.dispatchEvent(new CustomEvent("boardClicked", { detail: move }));
+  });
 
-  return { setPlayerLabels, setCurrentPlayerLabel };
+  return { setPlayerLabels, setCurrentPlayerLabel, renderBoard, setWins, showGameOverMessage };
 })();
 
 const Game = (function () {
   let players = null;
   let currentPlayerIdx = 0;
+  let gameOver = false;
 
   const getCurrentPlayer = () => {
     return players[currentPlayerIdx % players.length];
-  }
-
-  const getPlayers = () => players;
-
-  const setPlayers = (newPlayers) => {
-    players = newPlayers;
   }
 
   const isLegalMove = (row, column) => {
@@ -123,34 +157,44 @@ const Game = (function () {
     }
   }
 
-  const playTurn = (row, column) => {
-    if (!isLegalMove(row, column)) {
-      return { valid: false, winner: null, tie: false };
-    }
-
-    const currentPlayer = getCurrentPlayer();
-    Board.placeMarker(currentPlayer.marker, row, column);
-    currentPlayerIdx++;
-
-    const { winner, tie } = checkOutcome();
-    if (winner !== null) winner.addWin();
-
-    return { valid: true, winner, tie };
-  }
-
   const reset = () => {
     Board.clear();
     currentPlayerIdx = 0;
   }
 
+  const playTurn = (row, column) => {
+    if (!isLegalMove(row, column) || gameOver) return;
+
+    const currentPlayer = getCurrentPlayer();
+    Board.placeMarker(currentPlayer.marker, row, column);
+    Display.renderBoard();
+
+    const { winner, tie } = checkOutcome();
+
+    if (winner) {
+      winner.addWin();
+      Display.setWins(winner.number, winner.getWins());
+    }
+
+    if (winner || tie) {
+      gameOver = true;
+      Display.showGameOverMessage(winner, tie);
+    } else {
+      currentPlayerIdx++;
+      Display.setCurrentPlayerLabel(getCurrentPlayer().name);
+    }
+  }
+
   document.addEventListener("playersCreated", (e) => {
     const { player1Name, player1Marker, player2Name, player2Marker } = e.detail;
-    const player1 = createPlayer(player1Name, player1Marker);
-    const player2 = createPlayer(player2Name, player2Marker);
+    const player1 = createPlayer(player1Name, player1Marker, 1);
+    const player2 = createPlayer(player2Name, player2Marker, 2);
     players = [player1, player2];
     Display.setPlayerLabels(player1Name, player2Name);
     Display.setCurrentPlayerLabel(player1Name);
   });
 
-  return { getCurrentPlayer, getPlayers, setPlayers, playTurn, reset }
+  document.addEventListener("boardClicked", (e) => {
+    playTurn(e.detail.row, e.detail.column);
+  });
 })();
