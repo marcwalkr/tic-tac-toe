@@ -91,7 +91,7 @@ const Display = (function () {
 
   const showGameOverMessage = (winner, tie) => {
     if (tie) {
-      gameOverMessage.textContent = "Tied";
+      gameOverMessage.textContent = "Tied!";
     } else {
       gameOverMessage.textContent = `${winner.name} Wins!`;
     }
