@@ -117,6 +117,12 @@ const Display = (function () {
       player2Name: formData.get("player2Name").trim(),
       player2Marker: formData.get("player2Marker")
     };
+
+    if (playerData.player1Marker === playerData.player2Marker) {
+      alert("Please select different markers.");
+      return;
+    }
+
     document.dispatchEvent(new CustomEvent("playersCreated", { detail: playerData }));
     showGameScreen();
   });
