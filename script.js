@@ -49,9 +49,7 @@ const Display = (function () {
   const player1Wins = document.querySelector(".game__player-one-wins");
   const player2Wins = document.querySelector(".game__player-two-wins");
   const gameBoard = document.querySelector(".game-board");
-  const winnerName = document.querySelector(".game__winner-name");
-  const winMessage = document.querySelector(".game__win-message");
-  const tieMessage = document.querySelector(".game__tie-message");
+  const gameOverMessage = document.querySelector(".game__message");
   const newGameButton = document.querySelector(".game__new-game-btn");
 
   const setPlayerLabels = (p1, p2) => {
@@ -76,7 +74,7 @@ const Display = (function () {
         cell.textContent = value;
 
         cell.classList.remove("cell--x", "cell--o");
-        
+
         if (value === "X") cell.classList.add("cell--x");
         if (value === "O") cell.classList.add("cell--o");
       }
@@ -93,16 +91,16 @@ const Display = (function () {
 
   const showGameOverMessage = (winner, tie) => {
     if (tie) {
-      tieMessage.classList.add("is-active");
+      gameOverMessage.textContent = "Tied";
     } else {
-      winnerName.textContent = winner.name;
-      winMessage.classList.add("is-active");
+      gameOverMessage.textContent = `${winner.name} Wins!`;
     }
+
+    gameOverMessage.classList.add("is-active");
   }
 
   const hideGameOverMessages = () => {
-    winMessage.classList.remove("is-active");
-    tieMessage.classList.remove("is-active");
+    gameOverMessage.classList.remove("is-active");
   }
 
   const showNewGameButton = () => {
