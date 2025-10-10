@@ -57,6 +57,15 @@
   justify-content: center;
   align-items: center;
   border: 1px solid black;
+  font-weight: bold;
+}
+
+.game-board__cell.cell--x {
+  color: #E14434;
+}
+
+.game-board__cell.cell--o {
+  color: #5EABD6;
 }
 
 .game-board__cell:nth-child(1),

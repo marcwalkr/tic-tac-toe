@@ -74,6 +74,11 @@ const Display = (function () {
         const cell = gameBoard.querySelector(`[data-row="${i}"][data-column="${j}"]`);
         const value = Board.getCell(i, j);
         cell.textContent = value;
+
+        cell.classList.remove("cell--x", "cell--o");
+        
+        if (value === "X") cell.classList.add("cell--x");
+        if (value === "O") cell.classList.add("cell--o");
       }
     }
   }
